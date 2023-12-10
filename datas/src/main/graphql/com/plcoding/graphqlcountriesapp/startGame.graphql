@@ -1,0 +1,5 @@
+mutation startGame($gameId: String!){
+    startGame(gameID: $gameId){
+        success
+    }
+}

@@ -1,0 +1,217 @@
+type BotPlayer implements Player {
+  id: ID!
+
+  name: String!
+}
+
+type Card {
+  rank: Rank!
+
+  suit: Suit!
+}
+
+type Game {
+  id: ID!
+
+  teams: [Team!]!
+
+  winner: Team
+}
+
+type Hand {
+  player: Player!
+
+  cards: [Card]!
+}
+
+input InputCard {
+  suit: Suit
+
+  rank: Rank
+}
+
+type Lap {
+  id: ID!
+}
+
+type Move {
+  id: ID!
+
+  player: Player!
+
+  card: Card!
+}
+
+type Mutation {
+  ping: String
+
+  pingAuthorized: String
+
+  login(email: String!, password: String!): UserWithToken!
+
+  register(email: String!, password: String!): User!
+
+  refreshToken(refreshToken: String!): Tokens!
+
+  createGame: Game!
+
+  startGame(gameID: String!): SuccessMessage
+
+  move(gameID: String!, card: InputCard): SuccessMessage
+}
+
+interface Player {
+  id: ID!
+
+  name: String!
+}
+
+type PlayerSuit {
+  player: Player!
+
+  suit: Suit!
+}
+
+"""
+The `Points` scalar type represents team's points per lap. `Int` from `0` to `120`
+"""
+scalar Points
+
+type Query {
+  ping: String
+
+  pingAuthorized: String
+
+  hands(gameId: ID!): [Hand!]!
+
+  getUser(id: ID): User
+}
+
+"""
+The `Rank` scalar type represents card's rank. `Int` from `0` to `7`
+0 - 7
+1 - 8
+2 - 9
+3 - 10
+4 - J
+5 - Q
+6 - K
+7 - A
+"""
+scalar Rank
+
+enum Role {
+  Admin
+
+  User
+}
+
+type Round {
+  id: ID!
+
+  teamsPoints: [TeamPoints!]!
+
+  winner: Team
+}
+
+"""
+The `Score` scalar type represents team's score per game. `Int` from `0` to `12`
+"""
+scalar Score
+
+type Subscription {
+  ping: String
+
+  pingAuthorized: String
+
+  onGameStart(gameId: String!): Game!
+
+  onPlayersSuitChange(gameId: String!): [PlayerSuit!]!
+
+  onScoresChange(gameId: String!): [TeamScore!]!
+
+  onGameEnd(gameId: String!): Game!
+
+  onRoundStart(gameId: String!): Round!
+
+  onTrumpSuitChange(gameId: String!): Suit!
+
+  onHandsChange(gameId: String!): [Hand!]!
+
+  onRoundEnd(gameId: String!): Round!
+
+  onLapStart(gameId: String!): Lap!
+
+  onLapEnd(gameId: String!): Lap!
+
+  onMoveStart(gameId: String!): Move!
+
+  onMoveEnd(gameId: String!): Move!
+}
+
+type SuccessMessage {
+  success: Boolean
+}
+
+"""
+The `Suit` scalar type represents card's suit. `Int` from `0` to `3`
+0 - ♦️
+1 - ♥️
+2 - ♠️
+3 - ♣️
+"""
+scalar Suit
+
+type Team {
+  id: ID!
+
+  players: [Player!]!
+}
+
+type TeamPoints {
+  team: Team!
+
+  points: Points!
+}
+
+type TeamScore {
+  team: Team!
+
+  score: Score!
+}
+
+scalar Time
+
+type Tokens {
+  access: String!
+
+  refresh: String!
+}
+
+type User {
+  id: ID!
+
+  email: String!
+
+  username: String!
+
+  role: Role!
+}
+
+type UserPlayer implements Player {
+  id: ID!
+
+  name: String!
+}
+
+type UserWithToken {
+  user: User!
+
+  tokens: Tokens!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}

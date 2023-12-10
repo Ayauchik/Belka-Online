@@ -1,0 +1,19 @@
+subscription onGameStart($gameId: String!){
+    onGameStart(gameId: $gameId){
+        id
+        teams{
+            id
+            players{
+                id
+                name
+            }
+        }
+        winner{
+            id
+            players{
+                id
+                name
+            }
+        }
+    }
+}
